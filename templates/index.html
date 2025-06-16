@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Detection</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        function updateRecognizedFace() {
+            $.ajax({
+                url: '/get_recognized_face',
+                type: 'GET',
+                success: function(data) {
+                    document.getElementById("recognized_face").innerText = data.faceName;
+                },
+                error: function(error) {
+                    console.log('Error:', error);
+                }
+            });
+        }
+        // Function for decrementing the counter
+        var countdownValue = {{ timer_value }};  // Initial countdown value passed from Flask
+        function updateCountdown() {
+            var countdownElement = document.getElementById("countdown");
+            if (countdownValue <= 0) {
+                countdownElement.innerHTML = "Time's up!";
+            } else {
+                countdownElement.innerHTML = countdownValue + " seconds remaining";
+                countdownValue--;
+            }
+        }
+        // Update recognized face every 2 seconds (adjust as needed)
+        setInterval(updateRecognizedFace, 500);  // Update every 2 seconds
+        setInterval(updateCountdown, 1000);// Update countdown every second
+    </script>
+</head>
+<body>
+    <h1 style="text-align: center;">Driver Detection</h1>
+    <div class="container">
+        <img src="{{ url_for('static',filename='image.png')}}" style="height: 15%;width: 50%;position: relative; display:block; margin:auto; margin-bottom:20px;"> <!-- Replace "your_image_url.jpg" with your image URL or path -->
+    </div>
+    <img src="{{ url_for('video_feed') }}" width="640" height="480" style="display:block; margin:auto;">
+    <div style="text-align: center;">
+        <p id="recognized_face" style="font-size: xx-large; font-weight: bold; display: inline"></p>
+    </div>
+    <!-- Countdown timer -->
+    <div style="text-align: center; margin-top: 30px;">
+        <p id="countdown" style="font-size: xx-large; font-weight: bold;"></p>
+    </div>
+</body>
+</html>
+
+
