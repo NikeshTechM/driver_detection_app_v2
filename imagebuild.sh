@@ -2,8 +2,8 @@
 
 # === Variables ===
 IMAGE_NAME="quay.io/nikesh_sar/driver-detection-app-v2"
-NEW_TAG="v$(date +%Y%m%d%H%M%S)"
-FULL_IMAGE="${IMAGE_NAME}:${NEW_TAG}"
+TAG="latest"
+FULL_IMAGE="${IMAGE_NAME}:${TAG}"
 
 USERNAME="nikesh_sar"
 PASSWORD="Nikesh@123"
@@ -20,27 +20,33 @@ chmod 755 /var/log/podman
 
 BUILD_LOG="/var/log/podman/build.log"
 
+# === Delete existing build log file and create a new empty one ===
+if [ -f "$BUILD_LOG" ]; then
+  rm "$BUILD_LOG"
+fi
+touch "$BUILD_LOG"
+
 # === Dockerfile Existence Check ===
 if [ ! -f "$BUILD_DIR/Dockerfile" ]; then
   echo "❌ Dockerfile not found in $BUILD_DIR" | tee -a "$BUILD_LOG"
   exit 1
 fi
 
-# === Login to Quay.io (Optional: Can be removed if push is not needed) ===
+# === Login to Quay.io (optional if push not needed) ===
 echo "$PASSWORD" | podman login quay.io -u "$USERNAME" --password-stdin >> "$BUILD_LOG" 2>&1
 
-# === Remove Existing Local Images ===
-EXISTING_IMAGE_ID=$(podman images --format "{{.ID}}" "$IMAGE_NAME")
+# === Remove all existing local images with IMAGE_NAME (any tag) ===
+EXISTING_IMAGE_IDS=$(podman images --format "{{.ID}}" "$IMAGE_NAME")
 
-if [ -n "$EXISTING_IMAGE_ID" ]; then
-  echo "🔍 Found existing image. Removing..." | tee -a "$BUILD_LOG"
-  podman rmi -f "$IMAGE_NAME" >> "$BUILD_LOG" 2>&1
-  echo "✅ Existing image removed." | tee -a "$BUILD_LOG"
+if [ -n "$EXISTING_IMAGE_IDS" ]; then
+  echo "🔍 Found existing images for $IMAGE_NAME. Removing..." | tee -a "$BUILD_LOG"
+  podman rmi -f $EXISTING_IMAGE_IDS >> "$BUILD_LOG" 2>&1
+  echo "✅ Existing images removed." | tee -a "$BUILD_LOG"
 else
-  echo "ℹ️ No existing image found. Proceeding to build..." | tee -a "$BUILD_LOG"
+  echo "ℹ️ No existing images found for $IMAGE_NAME. Proceeding to build..." | tee -a "$BUILD_LOG"
 fi
 
-# === Build Image ===
+# === Build Image with tag 'latest' ===
 {
   echo "=== Build Started at $(date -Iseconds) ==="
   podman build -t "$FULL_IMAGE" "$BUILD_DIR"
@@ -62,7 +68,7 @@ curl -X POST "$API_URL" \
   -d @- <<EOF
 {
   "image": "$IMAGE_NAME",
-  "tag": "$NEW_TAG",
+  "tag": "$TAG",
   "timestamp": "$(date -Iseconds)"
 }
 EOF
