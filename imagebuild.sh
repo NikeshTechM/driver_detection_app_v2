@@ -36,15 +36,15 @@ fi
 echo "$PASSWORD" | podman login quay.io -u "$USERNAME" --password-stdin >> "$BUILD_LOG" 2>&1
 
 # === Remove all existing local images with IMAGE_NAME (any tag) ===
-EXISTING_IMAGE_IDS=$(podman images --format "{{.ID}}" "$IMAGE_NAME")
-
-if [ -n "$EXISTING_IMAGE_IDS" ]; then
-  echo "🔍 Found existing images for $IMAGE_NAME. Removing..." | tee -a "$BUILD_LOG"
-  podman rmi -f $EXISTING_IMAGE_IDS >> "$BUILD_LOG" 2>&1
-  echo "✅ Existing images removed." | tee -a "$BUILD_LOG"
-else
-  echo "ℹ️ No existing images found for $IMAGE_NAME. Proceeding to build..." | tee -a "$BUILD_LOG"
-fi
+# EXISTING_IMAGE_IDS=$(podman images --format "{{.ID}}" "$IMAGE_NAME")
+#
+# if [ -n "$EXISTING_IMAGE_IDS" ]; then
+#   echo "🔍 Found existing images for $IMAGE_NAME. Removing..." | tee -a "$BUILD_LOG"
+#   podman rmi -f $EXISTING_IMAGE_IDS >> "$BUILD_LOG" 2>&1
+#   echo "✅ Existing images removed." | tee -a "$BUILD_LOG"
+# else
+#   echo "ℹ️ No existing images found for $IMAGE_NAME. Proceeding to build..." | tee -a "$BUILD_LOG"
+# fi
 
 # === Build Image with tag 'latest' ===
 {
@@ -63,7 +63,7 @@ fi
 echo "✅ Successfully built new image: $FULL_IMAGE" | tee -a "$BUILD_LOG"
 
 #Test and validate the container
-python3 /root/ocpcls/validation-v2/master.py detection
+python3 /root/ocpcls/validation-v2/master.py --op detection
 
 #Push the container to Quay Repo
 /root/ocpcls/newconfig0405/oclogs/pushimagetoquay.sh
