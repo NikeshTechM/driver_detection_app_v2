@@ -63,7 +63,7 @@ fi
 echo "✅ Successfully built new image: $FULL_IMAGE" | tee -a "$BUILD_LOG"
 
 #Test and validate the container
-/root/ocpcls/validation-v2/launch-validation.sh vamshi
+python3 /root/ocpcls/validation-v2/master.py detection
 
 #Push the container to Quay Repo
 /root/ocpcls/newconfig0405/oclogs/pushimagetoquay.sh
