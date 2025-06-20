@@ -62,15 +62,8 @@ fi
 
 echo "✅ Successfully built new image: $FULL_IMAGE" | tee -a "$BUILD_LOG"
 
-# === Notify Web App ===
-curl -X POST "$API_URL" \
-  -H "Content-Type: application/json" \
-  -d @- <<EOF
-{
-  "image": "$IMAGE_NAME",
-  "tag": "$TAG",
-  "timestamp": "$(date -Iseconds)"
-}
-EOF
+#Test and validate the container
+/root/ocpcls/validation-v2/launch-validation.sh vamshi
 
-echo "✅ Notification sent to web app." | tee -a "$BUILD_LOG"
+#Push the container to Quay Repo
+/root/ocpcls/newconfig0405/oclogs/pushimagetoquay.sh
