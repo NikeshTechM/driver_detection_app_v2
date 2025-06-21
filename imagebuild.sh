@@ -35,7 +35,7 @@ fi
 # === Login to Quay.io (optional if push not needed) ===
 echo "$PASSWORD" | podman login quay.io -u "$USERNAME" --password-stdin >> "$BUILD_LOG" 2>&1
 
-# === Remove all existing local images with IMAGE_NAME (any tag) ===
+# === Check for existing images and remove them (Commented Out) ===
 # EXISTING_IMAGE_IDS=$(podman images --format "{{.ID}}" "$IMAGE_NAME")
 #
 # if [ -n "$EXISTING_IMAGE_IDS" ]; then
@@ -62,8 +62,8 @@ fi
 
 echo "✅ Successfully built new image: $FULL_IMAGE" | tee -a "$BUILD_LOG"
 
-#Test and validate the container
+# Test and validate the container
 python3 /root/ocpcls/validation-v2/master.py --op detection
 
-#Push the container to Quay Repo
+# Push the container to Quay Repo
 /root/ocpcls/newconfig0405/oclogs/pushimagetoquay.sh
