@@ -9,7 +9,10 @@ USERNAME="nikesh_sar"
 PASSWORD="Nikesh@123"
 
 # Build directory where the Dockerfile exists
-BUILD_DIR="/root/ocpcls/newconfig0405/oclogs/driver_detection_app_v2"
+#Old path
+#BUILD_DIR="/root/ocpcls/newconfig0405/oclogs/driver_detection_app_v2"
+#autosd  path
+BUILD_DIR="/root/ocppipeline/oclogs/driver_detection_app_v2"
 
 # API endpoint to notify
 API_URL="https://sosly6i1zl.execute-api.us-east-1.amazonaws.com/dev/RHOSGetFluentBitLogs"
