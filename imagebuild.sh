@@ -69,4 +69,7 @@ echo "✅ Successfully built new image: $FULL_IMAGE" | tee -a "$BUILD_LOG"
 python3 /root/ocpcls/validation-v2/master.py --op detection
 
 # Push the container to Quay Repo
-/root/ocpcls/newconfig0405/oclogs/pushimagetoquay.sh
+#old rhel path
+#/root/ocpcls/newconfig0405/oclogs/pushimagetoquay.sh
+#Autosd path
+/root/ocppipeline/oclogs/pushimagetoquay.sh
