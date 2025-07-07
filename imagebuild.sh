@@ -65,8 +65,11 @@ fi
 
 echo "✅ Successfully built new image: $FULL_IMAGE" | tee -a "$BUILD_LOG"
 
-# Test and validate the container
-python3 /root/ocpcls/validation-v2/master.py --op detection
+# Test and validate the container-RHEL
+#python3 /root/ocpcls/validation-v2/master.py --op detection
+
+# Test and validate the container-AutoSD
+python3 /root/ocppipeline/validation/master.py
 
 # Push the container to Quay Repo
 #old rhel path
